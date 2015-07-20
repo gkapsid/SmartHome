@@ -31,7 +31,6 @@ public class MainActivity extends Activity {
         webview.getSettings().setAllowFileAccess(true);        
         webview.getSettings().setBuiltInZoomControls(true); //multitouch an ipostirizetai        
         webview.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-        //webview.loadUrl("http://anasha.ddns.net"); //o server tou Arduino
         webview.loadUrl("file:///android_asset/content/amine.html");
         //webview.loadUrl("http://google.com"); //gia debug   
       
