@@ -1,0 +1,144 @@
+/*
+ Created by Rui Santos
+ Visit: http://randomnerdtutorials.com for more arduino projects
+
+ Arduino with Ethernet Shield
+ 1 page
+ 2 sliders (2 of the same kind! instead of 1 in 5_2 and 2 different in 6)
+ 1 sensor
+ 
+ Approved 15/7/2015
+ 
+ */
+
+#include <SPI.h>
+#include <Ethernet.h>
+int led = 4;
+int led2 = 5;
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };   //physical mac address
+byte ip[] = { 192, 168, 2, 3 };                      // ip in lan (that's what you need to use in your browser. ("192.168.1.178")
+byte gateway[] = { 192, 168, 2, 1 };                   // internet access via router
+byte subnet[] = { 255, 255, 255, 0 };                  //subnet mask
+EthernetServer server(8081);                             //server port
+String readString;
+
+void setup() {
+  // Open serial communications and wait for port to open:
+  //Serial.begin(9600);
+  //while (!Serial) {
+  //  ; // wait for serial port to connect. Needed for Leonardo only
+  //}
+  pinMode(led, OUTPUT);
+  // start the Ethernet connection and the server:
+  Ethernet.begin(mac, ip, gateway, subnet);
+  server.begin();
+  Serial.print("server is at ");
+  Serial.println(Ethernet.localIP());
+  //analogReference(INTERNAL);
+}
+
+
+void loop() {
+  // Create a client connection
+  EthernetClient client = server.available();
+  if (client) {
+    while (client.connected()) {
+      if (client.available()) {
+        char c = client.read();
+
+        //read char by char HTTP request
+        if (readString.length() < 100) {
+          //store characters to string
+          readString += c;
+          //Serial.print(c);
+        }
+
+        //if HTTP request has ended
+        if (c == '\n') {
+          Serial.println(readString); //print to serial monitor for debuging
+
+          client.println("HTTP/1.1 200 OK"); //send new page
+          client.println("Content-Type: text/html");
+          client.println();
+          client.println("<HTML>");
+          client.println("<HEAD>");
+          client.println("<meta http-equiv=\"Content-Type\" content=\"text/html\" charset=\"utf-8\"/>");
+          client.println("<meta name=\"viewport\" content=\"width=device-width\", initial-scale=\"1\">");
+          //client.println("<link rel=\"stylesheet\" href=\"http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css\" />");
+                    client.println("<link rel=\"stylesheet\" href=\"https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css\" />");
+                    
+
+          //client.println("<script src=\"http://code.jquery.com/jquery-1.11.1.min.js\"></script>");
+          client.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js\"></script>");
+          client.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js\"></script>");
+          //client.println("<script src=\"http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js\"></script>");
+          client.println("<TITLE>AnASHA Proj</TITLE>");
+          client.println("</HEAD>");
+          client.println("<BODY>");
+          client.println("<div data-role=\"header\" data-theme=\"b\">");
+	  client.println("<h1>Switches - Sensors</h1>");
+          client.println("</div>");
+          client.println("<div data-role=\"content\">");
+          client.println("<ul data-role=\"listview\" data-theme=\"c\" data-dividertheme=\"c\">");
+          client.println("<li>");
+          
+                    client.println("<li data-role=\"fieldcontain\">");
+	        	client.println("<label for=\"slider2\">Switch 1:</label>");
+				client.println("<select name=\"slider2\" id=\"slider2\" data-role=\"slider\">");
+					client.println("<option value=\"off\">Off</option>");
+					client.println("<option value=\"on\">On</option>");
+				client.println("</select>");
+			client.println("</li>");
+client.println("<li data-role=\"fieldcontain\">");
+	        	client.println("<label for=\"slider3\">Switch 2:</label>");
+				client.println("<select name=\"slider3\" id=\"slider3\" data-role=\"slider\">");
+					client.println("<option value=\"of3\">Off</option>");
+					client.println("<option value=\"o3\">On</option>");
+				client.println("</select>");
+			client.println("</li>");
+
+          
+          int readvalue = analogRead(0);
+          float temp;
+          temp = (5 * readvalue * 100 / 1024); //metatropi A/D (5*temp*100)/1024
+          client.println("<li data-role=\"fieldcontain\">");
+          client.print("<label for=\"name\">Θερμοκρασία: </label>");
+          client.println(temp);
+          client.println("</li>");
+          client.println("<SCRIPT>");
+          client.println("$(\"#slider2\").change(function() {");
+          client.println("$.post($('#slider2').val());");
+          client.println("});");
+          client.println("$(\"#slider3\").change(function() {");
+          client.println("$.post($('#slider3').val());");
+          client.println("});");
+          client.println("</SCRIPT> ");
+          client.println("</BODY>");
+          client.println("</HTML>");
+
+          delay(1);
+          //stopping client
+          client.stop();
+          //controls the Arduino if you press the buttons
+          if (readString.indexOf("on") > 0) {
+            digitalWrite(led, HIGH);
+          }
+          if (readString.indexOf("off") > 0) {
+            digitalWrite(led, LOW);
+          }
+          if (readString.indexOf("o3") > 0) {
+            digitalWrite(led2, HIGH);
+          }
+          if (readString.indexOf("of3") > 0) {
+            digitalWrite(led2, LOW);
+          }
+          //clearing string for next read
+          readString = "";
+
+        }
+      }
+    }
+
+  }
+
+}
