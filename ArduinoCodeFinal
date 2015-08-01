@@ -29,6 +29,7 @@ void setup() {
   //  ; // wait for serial port to connect. Needed for Leonardo only
   //}
   pinMode(led, OUTPUT);
+  pinMode(led2, OUTPUT);
   // start the Ethernet connection and the server:
   Ethernet.begin(mac, ip, gateway, subnet);
   server.begin();
