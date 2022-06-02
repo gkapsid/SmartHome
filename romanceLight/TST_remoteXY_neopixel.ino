@@ -1,9 +1,6 @@
 //gkapsid 23/5/2022 code works 
 // maybe wifimanager to be added 
 
-// to be kept and githubed!
-// to be video recorded and photos for youtube
-
 /*
    -- romanceLights --
    
@@ -33,8 +30,8 @@
 #include <Adafruit_NeoPixel.h>
 
 // RemoteXY connection settings 
-#define REMOTEXY_WIFI_SSID "VODAFONE_7014"
-#define REMOTEXY_WIFI_PASSWORD "fbcu45a9at7auchf"
+#define REMOTEXY_WIFI_SSID "yourSSID"
+#define REMOTEXY_WIFI_PASSWORD "yourPassword"
 #define REMOTEXY_SERVER_PORT 6377
 
 // Which pin on the Arduino is connected to the NeoPixels?
@@ -141,7 +138,10 @@ void rainbow(int wait) {
   // Color wheel has a range of 65536 but it's OK if we roll over, so
   // just count from 0 to 5*65536. Adding 256 to firstPixelHue each time
   // means we'll make 5*65536/256 = 1280 passes through this loop:
-  for(long firstPixelHue = 0; firstPixelHue < 65536; firstPixelHue += 256) {
+ 
+   // gkapsid: the rainbow effect could make the app irresponsive. the firstPixelHue value changed from 5*65536 to 65536.
+   // it improved connectivity and responsiveness when the rainbow effect was used
+  for(long firstPixelHue = 0; firstPixelHue < 65536; firstPixelHue += 256) { 
     // strip.rainbow() can take a single argument (first pixel hue) or
     // optionally a few extras: number of rainbow repetitions (default 1),
     // saturation and value (brightness) (both 0-255, similar to the
