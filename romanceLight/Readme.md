@@ -1,6 +1,14 @@
 # Romance Light Project
 
-This project is about a light controled by a smartphone app using WiFi locally. 
+This project is about a light controled by a smartphone app using WiFi locally.   
+Two modes of operation were implemented:   
+### WiFi mode 
+The Neopixel LEDs are all light up at the same color, that is controlled by the smartphone app. White light and lights off are also available.   
+
+### Rainbow mode (effect mode)   
+The Neopixel LEDs implement a rainbow light effect. Other effects can be implemented. The examples of the Neopixel library give many suggestions.
+
+
 
 ## Hardware 
 
@@ -30,5 +38,13 @@ The configuration that is used for the second case is :
 - ESP8266 based board
 - WiFi on chip
 - Arduino IDE
+
+The resulting app has a radio button to select between two modes of operation and a module to select between color, white light, grey light and lights off operation.   
+
+![remoteXYapp](https://user-images.githubusercontent.com/9993080/171569090-cd53ffad-1b51-4825-abc7-73ff495f0e73.png)
+
+
+
+
 
  
